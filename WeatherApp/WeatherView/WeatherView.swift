@@ -6,7 +6,7 @@ import SwiftUI
 
 struct WeatherView: View {
     
-    @State private var showSheet: Bool = false
+    @StateObject private var vm = WeatherViewModel()
     
     var body: some View {
         NavigationStack {
@@ -19,11 +19,12 @@ struct WeatherView: View {
                 .ignoresSafeArea()
                 
                 VStack(alignment: .center, spacing: 16 ) {
-                    SearchBarView()
-                    CurrentCardView(city: "Kyiv", tempature: 20, feelsLike: 23, description: "gresf", windSpeed: 24, humidity: 12)
+                    SearchBarView(vm: vm)
+                    CurrentCardView(city: vm.city, tempature: vm.tempature, feelsLike: vm.feelsLike, description: vm.description, windSpeed: vm.windSpeed, humidity: vm.humidity, imageName: vm.imageName)
                     Spacer()
-                    SevenDaysButtonView(title: "прогноз на 7 днів", action:  { showSheet = true })
-                        .sheet(isPresented: $showSheet) {
+                    ForecastHourlyView()
+                    SevenDaysButtonView(title: "прогноз на 7 днів", action:  { vm.showSheetAction() })
+                        .sheet(isPresented: $vm.showSheet) {
                             Forecast7DaysSheetView()
                         }
                 }
