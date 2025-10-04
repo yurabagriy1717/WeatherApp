@@ -12,10 +12,14 @@ struct CurrentCardView: View {
     let description: String
     let windSpeed: Int
     let humidity: Int
-    
+    let imageName: String
     
     var body: some View {
         VStack() {
+            Image(systemName: imageName)
+                .font(.system(size: 160))
+                .symbolRenderingMode(.multicolor)
+                .padding()
             Text(city)
                 .font(.title).bold()
                 .foregroundStyle(Color.white)
@@ -51,7 +55,7 @@ struct CurrentCardView: View {
 
 
 #Preview {
-    CurrentCardView(city: "Kyiv", tempature: 37, feelsLike: 42, description: "weather is sunny 34% snow", windSpeed: 100, humidity: 80)
+    CurrentCardView(city: "Kyiv", tempature: 37, feelsLike: 42, description: "weather is sunny 34% snow", windSpeed: 100, humidity: 80, imageName: "gbrg")
 }
 
 

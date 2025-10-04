@@ -12,14 +12,18 @@ struct ForecastRowView: View {
     
     var body: some View {
         HStack {
-            Text(date, style: .date)
+            Text(date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
                 .padding()
             Spacer()
-            Text("\(minTemp) \(maxTemp)")
+            Text("\(minTemp)")
+                .foregroundColor(.blue)
+            Text("\(maxTemp)")
+                .foregroundColor(.red)
             Spacer()
             Image(systemName: "cloud.sun")
                 .padding()
         }
+        .font(.headline)
     }
 }
 

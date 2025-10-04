@@ -5,17 +5,22 @@
 import SwiftUI
 
 struct SearchBarView: View {
-    @State private var query: String = ""
+    @ObservedObject var vm: WeatherViewModel
     
     
     var body: some View {
         NavigationStack {
             VStack {
-                TextField("Search", text: $query)
+                TextField("Search", text: $vm.query)
                     .padding(10)
                     .background(Color(.systemGray6))
                     .cornerRadius(10)
                     .padding(.horizontal)
+                    .onSubmit {
+                        Task {
+                            await vm.fetchCityWeather(city: vm.query)
+                        }
+                    }
             }
         }
     }
@@ -24,5 +29,5 @@ struct SearchBarView: View {
 
 
 #Preview {
-    SearchBarView()
+    SearchBarView(vm: WeatherViewModel())
 }
