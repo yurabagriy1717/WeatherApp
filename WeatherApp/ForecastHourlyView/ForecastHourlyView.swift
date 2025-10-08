@@ -14,43 +14,16 @@ struct HourlyWeather: Identifiable {
 }
 
 struct ForecastHourlyView: View {
-    
-    let hourlyData: [HourlyWeather] = [
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
-        HourlyWeather(temp: 23, symbol: "cloud.rain.fill", time: "10:00") ,
+    @ObservedObject var vm: WeatherViewModel
 
-    ]
-    
+        
     var body: some View {
         ScrollView(.horizontal) {
             HStack {
-                ForEach(hourlyData) { hour in
+                ForEach(vm.hourlyForecast) { hour in
                     VStack {
-                        Text("\(hour.temp)")
-                        Image(systemName:hour.symbol)
-                        Text("\(hour.time)")
+                        Text("\(Int(hour.main.temp))°C")
+                        Text(vm.formatHour(from: hour.dt_txt))
                     }
                     .foregroundColor(.white)
                     .frame(width: 70, height: 110)
@@ -65,5 +38,5 @@ struct ForecastHourlyView: View {
 
 
 #Preview {
-    ForecastHourlyView()
+    ForecastHourlyView(vm: WeatherViewModel())
 }

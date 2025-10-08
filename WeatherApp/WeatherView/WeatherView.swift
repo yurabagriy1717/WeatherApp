@@ -20,12 +20,12 @@ struct WeatherView: View {
                 
                 VStack(alignment: .center, spacing: 16 ) {
                     SearchBarView(vm: vm)
-                    CurrentCardView(city: vm.city, tempature: vm.tempature, feelsLike: vm.feelsLike, description: vm.description, windSpeed: vm.windSpeed, humidity: vm.humidity, imageName: vm.imageName)
+                    CurrentCardView(vm: vm)
                     Spacer()
-                    ForecastHourlyView()
+                    ForecastHourlyView(vm: vm)
                     SevenDaysButtonView(title: "прогноз на 7 днів", action:  { vm.showSheetAction() })
                         .sheet(isPresented: $vm.showSheet) {
-                            Forecast7DaysSheetView()
+                            Forecast7DaysSheetView( vm: vm)
                         }
                 }
                 .padding()

@@ -5,25 +5,30 @@
 import SwiftUI
 
 struct CurrentCardView: View {
-    
-    let city: String
-    let tempature: Int
-    let feelsLike: Int
-    let description: String
-    let windSpeed: Int
-    let humidity: Int
-    let imageName: String
+    @ObservedObject var vm: WeatherViewModel
     
     var body: some View {
         VStack() {
-            Image(systemName: imageName)
-                .font(.system(size: 160))
-                .symbolRenderingMode(.multicolor)
-                .padding()
-            Text(city)
+            if let url = vm.weatherIconURL {
+                AsyncImage(url: url) { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 160, height: 160)
+                } placeholder: {
+                    ProgressView()
+                }
+            } else {
+                Image(systemName: vm.imageName)
+                        .font(.system(size: 160))
+                        .symbolRenderingMode(.multicolor)
+                        .padding()
+            }
+            
+            Text(vm.city)
                 .font(.title).bold()
                 .foregroundStyle(Color.white)
-            Text("\(tempature)°C")
+            Text("\(vm.tempature)°C")
                 .font(.system(size: 40, weight: .bold))
                 .foregroundStyle(Color.white)
         }
@@ -33,15 +38,15 @@ struct CurrentCardView: View {
         .shadow(radius: 4, y: 2)
         
         VStack {
-            Text(description)
+            Text(vm.description)
                 .padding()
             
             HStack {
-                Label("\(feelsLike)" , systemImage: "thermometer")
+                Label("\(vm.feelsLike)" , systemImage: "thermometer")
                 Spacer()
-                Label("\(windSpeed)" , systemImage: "wind")
+                Label("\(vm.windSpeed)" , systemImage: "wind")
                 Spacer()
-                Label("\(humidity)" , systemImage: "humidity")
+                Label("\(vm.humidity)" , systemImage: "humidity")
             }
         }
         .padding(20)
@@ -55,7 +60,7 @@ struct CurrentCardView: View {
 
 
 #Preview {
-    CurrentCardView(city: "Kyiv", tempature: 37, feelsLike: 42, description: "weather is sunny 34% snow", windSpeed: 100, humidity: 80, imageName: "gbrg")
+    CurrentCardView(vm: WeatherViewModel())
 }
 
 
