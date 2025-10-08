@@ -6,21 +6,20 @@ import SwiftUI
 
 struct Forecast7DaysSheetView: View {
     @Environment(\.dismiss) var dismiss
+    @ObservedObject var vm: WeatherViewModel
     
     var body: some View {
         NavigationStack {
             VStack {
                 List {
-                    ForEach (0..<7) { day in
-                        ForecastRowView(
-                            date: Date().addingTimeInterval(Double(day) * 86400),
-                            minTemp: 77 ,
-                            maxTemp: 42)
-                        .listRowBackground(Color.clear)
-                        .background(.thinMaterial)
-                        .cornerRadius(14)
+                    ForEach(vm.dailyForecast) { item in
+                        ForecastRowView(item: item)
+                        
                     }
                 }
+                .listRowBackground(Color.clear)
+                .background(.thinMaterial)
+                .cornerRadius(14)
                 .scrollContentBackground(.hidden)
                 .background(
                     LinearGradient(
@@ -47,5 +46,5 @@ struct Forecast7DaysSheetView: View {
 }
 
 #Preview {
-    Forecast7DaysSheetView()
+    Forecast7DaysSheetView(vm: WeatherViewModel())
 }
