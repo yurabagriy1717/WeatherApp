@@ -8,6 +8,7 @@ import SwiftUI
 @MainActor
 class WeatherViewModel: ObservableObject {
     @Published var showSheet: Bool = false
+    @Published var showSheetFvourites: Bool = false
     @Published var city: String = "Kyiv"
     @Published var tempature: Int = 20
     @Published var feelsLike: Int = 15
@@ -22,6 +23,11 @@ class WeatherViewModel: ObservableObject {
     @Published var savedCityName: String = "" {
         didSet {
             UserDefaults.standard.set(savedCityName, forKey: "lastCity")
+        }
+    }
+    @Published var favouriteCity: [String] = [] {
+        didSet {
+            UserDefaults.standard.set(favouriteCity, forKey: "favouriteCity")
         }
     }
 
@@ -40,10 +46,20 @@ class WeatherViewModel: ObservableObject {
                 await fetchCityWeather(city: "Kyiv")
             }
         }
+        
+        if let favouriteCity = UserDefaults.standard.array(forKey: "favouriteCity") as? [String] {
+            self.favouriteCity = favouriteCity
+        }
+        
     }
     
     func showSheetAction() {
-        showSheet = true
+        showSheet = true        
+    }
+    
+    func showSheetFavourites() {
+        showSheetFvourites = true
+        
     }
     
     func fetchCityWeather(city: String) async {
@@ -102,6 +118,58 @@ class WeatherViewModel: ObservableObject {
         
     }
     
+    func saveCity(city: String) async {
+        guard let url = URL(string: "https://webhook.site/d02a9757-397c-4808-87ee-09559a55fce3") else {
+            print("❌ Invalid URL")
+            return
+        }
+        
+        let newCity = FavouriteCityRequest(city: city)
+        
+        guard let jsonData = try? JSONEncoder().encode(newCity) else {
+            print("❌ Failed to encode JSON")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+        
+        do {
+            let (data,response) = try await URLSession.shared.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200..<300).contains(httpResponse.statusCode) else {
+                print("server error")
+                return
+            }
+            let decoded = try JSONDecoder().decode(FavouriteCityResponse.self, from: data)
+            print("✅ Saved city: \(decoded.city)")
+        } catch {
+            print("Error fetching data: \(error.localizedDescription)")
+        }
+    }
+    
+    func addCity(city: String) {
+        if !favouriteCity.contains(city) {
+            favouriteCity.append(city)
+            print("✅ Added \(city) to favorites")
+        }
+    }
+    
+    func removeCity(city: String) {
+        if let index = favouriteCity.firstIndex(of: city) {
+            favouriteCity.remove(at: index)
+            print("✅ Removed \(city) from favorites")
+        }
+    }
+    
+    func removeCity(at offsets: IndexSet) {
+        offsets.map { favouriteCity[$0] }.forEach { city in
+            removeCity(city: city)
+        }
+    }
+    
     var weatherIconURL: URL? {
         guard !iconCode.isEmpty else { return nil }
         return URL(string: "https://openweathermap.org/img/wn/\(iconCode)@2x.png")
@@ -139,6 +207,7 @@ class WeatherViewModel: ObservableObject {
         }
         .sorted { $0.dt < $1.dt }
     }
+    
     func formatHour(from dateString: String) -> String {
            let formatter = DateFormatter()
            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -150,62 +219,7 @@ class WeatherViewModel: ObservableObject {
            formatter.dateFormat = "HH:mm"
            return formatter.string(from: localDate)
        }
-    
 }
 
-struct WeatherResponse: Codable {
-    let name: String
-    let main: Main
-    let wind: Wind
-    let weather: [Weather]
-}
 
-struct Main: Codable {
-    let temp: Double
-    let feels_like: Double
-    let humidity: Double
-}
-
-struct Wind: Codable {
-    let speed: Double
-}
-
-struct Weather: Codable {
-    let description: String
-    let icon: String
-}
-
-struct ForecastResponse: Codable {
-    let list: [ForecastItem]
-    let city: City
-}
-
-struct City: Codable {
-    let timezone: Int
-}
-
-struct ForecastItem: Codable, Identifiable {
-    var id = UUID()
-    let dt: Int
-    let main: ForecastMain
-    let dt_txt: String
-    let weather: [Weather]
-    
-    private enum CodingKeys: String, CodingKey {
-            case dt, main, dt_txt, weather
-        }
-}
-
-extension ForecastItem {
-    var iconURL: URL? {
-        guard let code = weather.first?.icon else { return nil }
-        return URL(string: "https://openweathermap.org/img/wn/\(code)@2x.png")
-    }
-}
-
-struct ForecastMain: Codable {
-    let temp: Double
-    let temp_min: Double
-    let temp_max: Double
-}
 
