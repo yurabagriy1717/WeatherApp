@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		A22381C42E8FF58F004CC640 /* WeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A22381C42E8FF58F004CC640 /* WeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = WeatherApp.app; path = "/Users/urijbagrij/Desktop/WeatherApp/build/Debug-iphoneos/WeatherApp.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,16 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				A22381C62E8FF58F004CC640 /* WeatherApp */,
-				A22381C52E8FF58F004CC640 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		A22381C52E8FF58F004CC640 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A22381C42E8FF58F004CC640 /* WeatherApp.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -95,7 +86,7 @@
 			mainGroup = A22381BB2E8FF58F004CC640;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = A22381C52E8FF58F004CC640 /* Products */;
+			productRefGroup = A22381BB2E8FF58F004CC640;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (

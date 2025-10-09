@@ -27,6 +27,16 @@ struct WeatherView: View {
                         .sheet(isPresented: $vm.showSheet) {
                             Forecast7DaysSheetView( vm: vm)
                         }
+                    FavouriteCityButtonView(title: "збережені міста", action: {
+                        Task {
+                            await vm.saveCity(city: vm.city)
+                            vm.addCity(city: vm.city)
+                            vm.showSheetFavourites()
+                        }
+                    })
+                    .sheet(isPresented: $vm.showSheetFvourites) {
+                        FavouriteCityView(vm: vm)
+                    }
                 }
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -34,9 +44,9 @@ struct WeatherView: View {
         }
     }
 }
-
-
-
-#Preview {
-    WeatherView()
-}
+    
+    
+    
+    #Preview {
+        WeatherView()
+    }
