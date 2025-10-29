@@ -18,7 +18,7 @@ struct SearchBarView: View {
                     .padding(.horizontal)
                     .onSubmit {
                         Task {
-                            await vm.fetchCityWeather(city: vm.query)
+                            await vm.searchCity()
                         }
                     }
             }
@@ -29,5 +29,6 @@ struct SearchBarView: View {
 
 
 #Preview {
-    SearchBarView(vm: WeatherViewModel())
+    SearchBarView(vm: AppDIContainer.shared.makeWeatherViewModel())
 }
+

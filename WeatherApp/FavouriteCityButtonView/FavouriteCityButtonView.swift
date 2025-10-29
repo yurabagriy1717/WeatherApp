@@ -5,8 +5,6 @@
 import SwiftUI
 
 struct FavouriteCityButtonView: View {
-    
-    
     let title: String
     let action: () -> Void
     

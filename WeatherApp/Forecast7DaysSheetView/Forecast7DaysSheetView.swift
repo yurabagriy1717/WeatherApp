@@ -6,7 +6,7 @@ import SwiftUI
 
 struct Forecast7DaysSheetView: View {
     @Environment(\.dismiss) var dismiss
-    @ObservedObject var vm: WeatherViewModel
+    @ObservedObject var vm: ForecastRowViewModel
     
     var body: some View {
         NavigationStack {
@@ -46,5 +46,5 @@ struct Forecast7DaysSheetView: View {
 }
 
 #Preview {
-    Forecast7DaysSheetView(vm: WeatherViewModel())
+    Forecast7DaysSheetView(vm: AppDIContainer.shared.makeForecastRowViewModel())
 }

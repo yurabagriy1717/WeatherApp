@@ -6,8 +6,9 @@ import SwiftUI
 
 struct FavouriteCityView: View {
     @Environment(\.dismiss) var dismiss
-    @ObservedObject var vm: WeatherViewModel
-
+    @ObservedObject var vm: FavouriteCityViewModel
+    var onSelect: (String) -> Void
+    
     var body: some View {
         NavigationStack {
             Text("favourites city")
@@ -15,10 +16,26 @@ struct FavouriteCityView: View {
                 .padding(.top)
             List {
                 ForEach(vm.favouriteCity, id: \.self) { city in
-                    Text(city)
+                    Button {
+                        onSelect(city)
+                        dismiss()
+                    } label: {
+                        HStack {
+                            Image(systemName: "mappin.and.ellipse")
+                                .foregroundColor(.blue)
+                            Text(city)
+                                .font(.headline)
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
+                        .padding(.vertical, 6)
+                    }
                 }
                 .onDelete(perform: vm.removeCity)
             }
+            .listStyle(.insetGrouped)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -37,5 +54,5 @@ struct FavouriteCityView: View {
 
 
 #Preview {
-    FavouriteCityView(vm: WeatherViewModel())
+    FavouriteCityView(vm: AppDIContainer.shared.makeFavouriteCityViewModel()) { _ in }
 }

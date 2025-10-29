@@ -5,17 +5,17 @@
 import SwiftUI
 
 struct ForecastRowView: View {
-    let item: ForecastItem
+    let item: ForecastItemModel
     
     var body: some View {
         HStack {
-            Text(formatDate(from: item.dt_txt))
+            Text(formatDate(from: item.forecatDays))
                 .fontWeight(.medium)
                 .frame(width: 80, alignment: .leading)
             Spacer()
-            Text("\(Int(item.main.temp_min))")
+            Text("\(Int(item.temperatureInfo.temp_min))")
                 .foregroundColor(.blue)
-            Text("\(Int(item.main.temp_max))")
+            Text("\(Int(item.temperatureInfo.temp_max))")
                 .foregroundColor(.red)
             Spacer()
             if let url = item.iconURL {
@@ -26,6 +26,7 @@ struct ForecastRowView: View {
                         .frame(width: 32, height: 32)
                 } placeholder : {
                     ProgressView()
+                        .frame(width: 32, height: 32)
                 }
             }
         }
@@ -44,11 +45,12 @@ struct ForecastRowView: View {
 }
 
 #Preview {
-    ForecastRowView(item: ForecastItem(
-            dt: 1661871600,
-            main: ForecastMain(temp: 18, temp_min: 16, temp_max: 20),
-            dt_txt: "2025-10-07 12:00:00",
-            weather: [Weather(description: "Light rain", icon: "10d")]
+    ForecastRowView(item: ForecastItemModel(
+        date: 1661871600,
+        temperatureInfo: TempratureInfoModel(temp: 18, temp_min: 16, temp_max: 20),
+        forecatDays: "2025-10-07 12:00:00",
+        weatherInfo: [
+            WeatherInfoModel(description: "Light rain", icon: "10d")
+        ]
     ))
 }
-

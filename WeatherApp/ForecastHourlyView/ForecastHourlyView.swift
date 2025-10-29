@@ -14,7 +14,7 @@ struct HourlyWeather: Identifiable {
 }
 
 struct ForecastHourlyView: View {
-    @ObservedObject var vm: WeatherViewModel
+    @ObservedObject var vm: ForecastRowViewModel
 
         
     var body: some View {
@@ -22,8 +22,8 @@ struct ForecastHourlyView: View {
             HStack {
                 ForEach(vm.hourlyForecast) { hour in
                     VStack {
-                        Text("\(Int(hour.main.temp))°C")
-                        Text(vm.formatHour(from: hour.dt_txt))
+                        Text("\(Int(hour.temperatureInfo.temp))°C")
+                        Text(vm.formatHour(from: hour.forecatDays))
                     }
                     .foregroundColor(.white)
                     .frame(width: 70, height: 110)
@@ -38,5 +38,5 @@ struct ForecastHourlyView: View {
 
 
 #Preview {
-    ForecastHourlyView(vm: WeatherViewModel())
+    ForecastHourlyView(vm: AppDIContainer.shared.makeForecastRowViewModel())
 }

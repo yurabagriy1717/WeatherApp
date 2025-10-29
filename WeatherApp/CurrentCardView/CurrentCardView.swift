@@ -5,11 +5,11 @@
 import SwiftUI
 
 struct CurrentCardView: View {
-    @ObservedObject var vm: WeatherViewModel
+    @ObservedObject var vm: CurrentCardViewModel
     
     var body: some View {
         VStack() {
-            if let url = vm.weatherIconURL {
+            if let url = vm.weatherDomainModel.iconURL {
                 AsyncImage(url: url) { image in
                     image
                         .resizable()
@@ -19,16 +19,16 @@ struct CurrentCardView: View {
                     ProgressView()
                 }
             } else {
-                Image(systemName: vm.imageName)
+                Image(systemName: "cloud.sun.fill")
                         .font(.system(size: 160))
                         .symbolRenderingMode(.multicolor)
                         .padding()
             }
             
-            Text(vm.city)
+            Text(vm.savedCityName)
                 .font(.title).bold()
                 .foregroundStyle(Color.white)
-            Text("\(vm.tempature)°C")
+            Text("\(Int(vm.weatherDomainModel.temperature))°C")
                 .font(.system(size: 40, weight: .bold))
                 .foregroundStyle(Color.white)
         }
@@ -38,15 +38,15 @@ struct CurrentCardView: View {
         .shadow(radius: 4, y: 2)
         
         VStack {
-            Text(vm.description)
+            Text(vm.weatherDomainModel.description)
                 .padding()
             
             HStack {
-                Label("\(vm.feelsLike)" , systemImage: "thermometer")
+                Label("\(vm.weatherDomainModel.feelsLike)" , systemImage: "thermometer")
                 Spacer()
-                Label("\(vm.windSpeed)" , systemImage: "wind")
+                Label("\(vm.weatherDomainModel.windSpeed)" , systemImage: "wind")
                 Spacer()
-                Label("\(vm.humidity)" , systemImage: "humidity")
+                Label("\(vm.weatherDomainModel.humidity)" , systemImage: "humidity")
             }
         }
         .padding(20)
@@ -60,7 +60,7 @@ struct CurrentCardView: View {
 
 
 #Preview {
-    CurrentCardView(vm: WeatherViewModel())
+    CurrentCardView(vm: AppDIContainer.shared.makeCurrentCardViewModel())
 }
 
 
