@@ -10,10 +10,9 @@ final class CurrentCardViewModel: ObservableObject {
     @Published var weatherDomainModel: WeatherModel = .empty
     @Published var savedCityName: String = ""
     
-//    private let network: NetworkService = NetworkServiceImpl.shared
-//    private let weatherModelBuilder: WeatherBuildable = WeatherBuilder.shared
-//    private let data: DataService = DefaultDataService.shared
-    
+    let errorPublisher = PassthroughSubject<String, Never>()
+    var loadingPublisher = CurrentValueSubject<Bool, Never>(false)
+
     private let network: NetworkService
     private let weatherModelBuilder: WeatherBuildable
     private let data: DataService
@@ -40,6 +39,7 @@ final class CurrentCardViewModel: ObservableObject {
     }
 
     func fetchCityWeather(city: String) async {
+        loadingPublisher.send(true)
         do {
             let weatherServiceModel = try await network.fetchCityWeather(city: city)
             let weatherDomainModel = mapWeather(serviceModel: weatherServiceModel)
@@ -48,8 +48,10 @@ final class CurrentCardViewModel: ObservableObject {
                 self.savedCityName = city
                 data.saveLastCity(city)
             }
+            loadingPublisher.send(false)
         } catch {
-            print("Error fetching data: \(error.localizedDescription)")
+            loadingPublisher.send(false)
+            errorPublisher.send("не вдалося завантажити погоду: \(error.localizedDescription)")
         }
     }
 }

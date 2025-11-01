@@ -28,11 +28,7 @@ final class FavouriteCityViewModel: ObservableObject {
         
         self.favouriteCity = data.loadFavouriteCities()
     }
-    
-//    private let data: DataService = DefaultDataService.shared
-//    private let network: NetworkService = NetworkServiceImpl.shared
-//    private let favouriteCityBuilder: FavouriteCityBuildable = FavouriteCityBuilder.shared
-    
+        
     private func mapFavouriteCity(serviceModel: FavouriteCityResponse) -> FavouriteCityModel {
         favouriteCityBuilder.buildFavouriteCity(response: serviceModel)
     }

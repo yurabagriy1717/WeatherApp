@@ -7,6 +7,11 @@ import SwiftUI
 struct WeatherView: View {
     @StateObject private var vm = AppDIContainer.shared.makeWeatherViewModel()
     
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    @State private var isLoading = false
+    
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -28,7 +33,7 @@ struct WeatherView: View {
                         }
                     FavouriteCityButtonView(title: "збережені міста", action: {
                         vm.favouritesCityVM.addCity(city: vm.currentCardVM.savedCityName)
-                            vm.showSheetFavourites()
+                        vm.showSheetFavourites()
                         
                     })
                     .sheet(isPresented: $vm.showSheetFvourites) {
@@ -42,17 +47,46 @@ struct WeatherView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                if isLoading {
+                    ZStack {
+                        Color.black.opacity(0.3).ignoresSafeArea()
+                        ProgressView("Завантаження...")
+                            .padding()
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(12)
+                            .shadow(radius: 5)
+                    }
+                    .transition(.opacity.animation(.easeInOut(duration: 0.3)))
+                }
             }
         }
         .task {
             await vm.currentCardVM.fetchCityWeather(city: vm.currentCardVM.savedCityName)
             await vm.forecastRowVM.fetchForecast(city: vm.currentCardVM.savedCityName)
         }
+        .onReceive(vm.loadingPublisher) { value in
+            withAnimation {
+                isLoading = value
+            }
+        }
+        .onReceive(vm.errorPublisher) { message in
+            alertMessage = message
+            showAlert = true
+        }
+        .alert("error", isPresented: $showAlert) {
+            Button(role: .cancel) {
+                alertMessage = ""
+            } label: {
+                Text("OK")
+            }
+        } message: {
+            Text(alertMessage)
+        }
     }
 }
-    
-    
-    
-    #Preview {
-        WeatherView()
-    }
+
+
+
+#Preview {
+    WeatherView()
+}

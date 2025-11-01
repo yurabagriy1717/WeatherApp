@@ -7,12 +7,13 @@ import Foundation
 
 @MainActor
 final class ForecastRowViewModel: ObservableObject {
+    let errorPublisher = PassthroughSubject<String, Never>()
+    let loadingPublisher = CurrentValueSubject<Bool, Never>(false)
+
+
     @Published var forecastList: [ForecastItemModel] = []
     @Published var cityTimezone: Int = 0
 
-//    private let network: NetworkService = NetworkServiceImpl.shared
-//    private let forecastModelBuilder: ForecastBuildable = ForecastBuilder.shared
-    
     private let network: NetworkService
     private let forecastModelBuilder: ForecastBuildable
     
@@ -30,15 +31,17 @@ final class ForecastRowViewModel: ObservableObject {
 
     func fetchForecast(city: String) async {
         do {
+            loadingPublisher.send(true)
             let forecastServiceModel = try await network.fetchForecast(city: city)
             let forecastDomainModel = mapForecast(serviceModel: forecastServiceModel)
             await MainActor.run {
                 self.forecastList = forecastDomainModel.list
                 self.cityTimezone = forecastDomainModel.city.timezone
             }
+            loadingPublisher.send(false)
         } catch {
-            print("Error fetching data: \(error.localizedDescription)")
-        }
+            loadingPublisher.send(false)
+            errorPublisher.send("не вдалося завантажити погоду: \(error.localizedDescription)")        }
     }
     
     var dailyForecast: [ForecastItemModel] {
