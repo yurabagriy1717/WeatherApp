@@ -16,11 +16,8 @@ struct SearchBarView: View {
                     .background(Color(.systemGray6))
                     .cornerRadius(10)
                     .padding(.horizontal)
-                    .onSubmit {
-                        Task {
-                            await vm.searchCity()
-                        }
-                    }
+                    .textInputAutocapitalization(.never)
+                    .disableAutocorrection(true)
             }
         }
     }
